@@ -30,29 +30,35 @@
 // Get the ball element
 const ball = document.getElementById('ball');
 // Initial position
-let xPosition = 50;
-let yPosition = 50;
+let xPosition = window.innerWidth / 2;
+let yPosition = window.innerHeight / 2;
 
 function handleMotionEvent(event) {
-  // Get the acceleration along the x and y axes
-  let accelerationX = event.accelerationIncludingGravity.x;
-  let accelerationY = event.accelerationIncludingGravity.y;
+  // Check if accelerationIncludingGravity data is available
+  if (event.accelerationIncludingGravity) {
+    // Get the acceleration along the x and y axes
+    let accelerationX = event.accelerationIncludingGravity.x;
+    let accelerationY = event.accelerationIncludingGravity.y;
 
-  // Convert acceleration to position change
-  xPosition += accelerationX * 0.1;
-  yPosition += accelerationY * 0.1;
+    // Convert acceleration to position change
+    xPosition = Math.max(0, Math.min(window.innerWidth - ball.offsetWidth, xPosition - accelerationX * 5));
+    yPosition = Math.max(0, Math.min(window.innerHeight - ball.offsetHeight, yPosition + accelerationY * 5));
 
-  // Bound the position within the window
-  xPosition = Math.max(0, Math.min(window.innerWidth - ball.offsetWidth, xPosition));
-  yPosition = Math.max(0, Math.min(window.innerHeight - ball.offsetHeight, yPosition));
-
-  // Update the ball's position
-  ball.style.left = xPosition + 'px';
-  ball.style.top = yPosition + 'px';
+    // Update the ball's position
+    ball.style.left = xPosition + 'px';
+    ball.style.top = yPosition + 'px';
+  } else {
+    console.error('Acceleration data is not available.');
+  }
 }
 
-// Listen for device motion events
-window.addEventListener('devicemotion', handleMotionEvent);
+// Check if the device supports DeviceMotionEvent
+if (window.DeviceMotionEvent) {
+  // Listen for device motion events
+  window.addEventListener('devicemotion', handleMotionEvent);
+} else {
+  console.error('DeviceMotionEvent is not supported on your device.');
+}
 </script>
 </body>
 </html>
