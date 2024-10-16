@@ -1,27 +1,58 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>lottie测试</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.2/lottie.min.js"></script>
-  </head>
-  <body>
-    <p>测试</p>
-    <div id="lottieContainer"></div>
-    
-    <script>
-        // 获取容器
-        var lottieContainer = document.getElementById('lottieContainer');
-      
-        // 加载Lottie动画
-        var animation = bodymovin.loadAnimation({
-          container: lottieContainer, // 指定容器
-          path: '/data.json', // JSON文件路径
-          renderer: 'svg', // 渲染器类型，可以是'svg'、'canvas'或'html'
-          loop: true, // 是否循环播放
-          autoplay: true // 是否自动播放
-        });
-    </script>
-  </body>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phone Tilt Simulation</title>
+<style>
+  #ball {
+    width: 50px;
+    height: 50px;
+    background-color: red;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%; /* Make it look like a ball */
+  }
+  body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+  }
+</style>
+</head>
+<body>
+<div id="ball"></div>
+
+<script>
+// Get the ball element
+const ball = document.getElementById('ball');
+// Initial position
+let xPosition = 50;
+let yPosition = 50;
+
+function handleMotionEvent(event) {
+  // Get the acceleration along the x and y axes
+  let accelerationX = event.accelerationIncludingGravity.x;
+  let accelerationY = event.accelerationIncludingGravity.y;
+
+  // Convert acceleration to position change
+  xPosition += accelerationX * 0.1;
+  yPosition += accelerationY * 0.1;
+
+  // Bound the position within the window
+  xPosition = Math.max(0, Math.min(window.innerWidth - ball.offsetWidth, xPosition));
+  yPosition = Math.max(0, Math.min(window.innerHeight - ball.offsetHeight, yPosition));
+
+  // Update the ball's position
+  ball.style.left = xPosition + 'px';
+  ball.style.top = yPosition + 'px';
+}
+
+// Listen for device motion events
+window.addEventListener('devicemotion', handleMotionEvent);
+</script>
+</body>
 </html>
